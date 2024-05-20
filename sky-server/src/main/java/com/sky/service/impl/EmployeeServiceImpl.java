@@ -9,15 +9,20 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.service.EmployeeService;
+import com.sky.utils.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 @Service
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
-
     @Autowired
     private EmployeeMapper employeeMapper;
+    @Value("${sky.salt}")
+    private String salt;
 
     /**
      * 员工登录
@@ -25,33 +30,28 @@ public class EmployeeServiceImpl implements EmployeeService {
      * @param employeeLoginDTO
      * @return
      */
+    @Override
     public Employee login(EmployeeLoginDTO employeeLoginDTO) {
-        String username = employeeLoginDTO.getUsername();
-        String password = employeeLoginDTO.getPassword();
-
-        //1、根据用户名查询数据库中的数据
-        Employee employee = employeeMapper.getByUsername(username);
-
-        //2、处理各种异常情况（用户名不存在、密码不对、账号被锁定）
-        if (employee == null) {
-            //账号不存在
+        // 对密码进行md5加盐加密操作
+        String password=DigestUtils.md5DigestAsHex((employeeLoginDTO.getPassword()+salt).getBytes());
+        //根据用户名查询数据库中的数据
+        Employee employee = employeeMapper.login(employeeLoginDTO.getUsername());
+        // 判断传递的账号是否存在
+        if(employee==null){
+            //返回账号不存在Exception
+            log.info(MessageConstant.ACCOUNT_NOT_FOUND);
             throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
-        }
-
-        //密码比对
-        // TODO 后期需要进行md5加密，然后再进行比对
-        if (!password.equals(employee.getPassword())) {
-            //密码错误
+        }else if(!employee.getPassword().equals(password)){
+            //判断密码是否正确
+            log.info(MessageConstant.PASSWORD_ERROR);
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
-        }
-
-        if (employee.getStatus() == StatusConstant.DISABLE) {
-            //账号被锁定
+        } else if (employee.getStatus()==StatusConstant.DISABLE) {
+            //判断账号是否被锁定
+            log.info(MessageConstant.ACCOUNT_LOCKED);
             throw new AccountLockedException(MessageConstant.ACCOUNT_LOCKED);
         }
-
-        //3、返回实体对象
         return employee;
     }
+
 
 }

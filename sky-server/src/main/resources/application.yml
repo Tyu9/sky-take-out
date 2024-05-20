@@ -3,10 +3,10 @@ server:
 
 spring:
   profiles:
-    active: dev
+    active: dev #配置环境信息
   main:
-    allow-circular-references: true
-  datasource:
+    allow-circular-references: true # 允许循环引用
+  datasource: #数据库连接配置
     druid:
       driver-class-name: ${sky.datasource.driver-class-name}
       url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
@@ -20,7 +20,7 @@ mybatis:
   configuration:
     #开启驼峰命名
     map-underscore-to-camel-case: true
-
+#配置日志
 logging:
   level:
     com:
@@ -28,7 +28,7 @@ logging:
         mapper: debug
         service: info
         controller: info
-
+#配置令牌
 sky:
   jwt:
     # 设置jwt签名加密时使用的秘钥
@@ -37,3 +37,7 @@ sky:
     admin-ttl: 7200000
     # 设置前端传递过来的令牌名称
     admin-token-name: token
+    # 设置MD5加密时使用的盐值
+  salt: tanyu
+
+
