@@ -1,7 +1,11 @@
 package com.sky.intercepter;
 
+import com.sky.constant.JwtClaimsConstant;
+import com.sky.context.BaseContext;
+import com.sky.dto.EmployeeDTO;
 import com.sky.properties.JwtProperties;
 import com.sky.utils.JwtUtil;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +45,9 @@ public class AdminLoginTokenInterceptor implements HandlerInterceptor {
         }
         //3、存在则校验令牌是否有效
         try {
-            JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
+            Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
+            Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
+            BaseContext.setCurrentId(empId);
         } catch (Exception e) {
             e.printStackTrace();
             log.info("令牌错误,响应401");
@@ -59,6 +65,7 @@ public class AdminLoginTokenInterceptor implements HandlerInterceptor {
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        HandlerInterceptor.super.afterCompletion(request, response, handler, ex);
+        //清除线程变量
+       BaseContext.removeCurrentId();
     }
 }
