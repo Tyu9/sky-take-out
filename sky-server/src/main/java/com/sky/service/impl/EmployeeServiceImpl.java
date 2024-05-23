@@ -9,6 +9,7 @@ import com.sky.context.BaseContext;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.exception.AccountLockedException;
 import com.sky.exception.AccountNotFoundException;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
+import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -112,14 +114,45 @@ public class EmployeeServiceImpl implements EmployeeService {
      */
     @Override
     public void update(Employee employee) {
+        //1、补全修改时间、修改人
         employee.setUpdateTime(LocalDateTime.now());
         employee.setUpdateUser(BaseContext.getCurrentId());
+        //2、调用mapper层方法
         employeeMapper.update(employee);
     }
 
+    /**
+     * 根据id查询员工
+     * @param id
+     * @return
+     */
     @Override
     public Employee findById(Long id) {
        Employee employee = employeeMapper.findById(id);
         return employee;
+    }
+
+    /**
+     * 修改员工密码
+     *
+     * @param passwordEditDTO
+     */
+    @Override
+    public void updatePassword(PasswordEditDTO passwordEditDTO) {
+        //获取到传入的旧密码并进行加盐加密
+        String password = DigestUtils.md5DigestAsHex((passwordEditDTO.getOldPassword() + salt).getBytes());
+        //通过id查询该员工信息
+        Employee employee = employeeMapper.findById(passwordEditDTO.getEmpId());
+        //判断是否能查到该员工
+        if(employee == null){
+            throw new AccountNotFoundException(MessageConstant.ACCOUNT_NOT_FOUND);
+        }
+        //判断输入的旧密码和数据库中密码是否对应
+        if(!password.equals(employee.getPassword())){
+            throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
+        }
+        //将新密码加盐加密
+        employee.setPassword(DigestUtils.md5DigestAsHex((passwordEditDTO.getNewPassword()+salt).getBytes()));
+        employeeMapper.update(employee);
     }
 }

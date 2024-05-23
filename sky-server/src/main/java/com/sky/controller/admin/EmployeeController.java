@@ -4,6 +4,7 @@ import com.sky.constant.JwtClaimsConstant;
 import com.sky.dto.EmployeeDTO;
 import com.sky.dto.EmployeeLoginDTO;
 import com.sky.dto.EmployeePageQueryDTO;
+import com.sky.dto.PasswordEditDTO;
 import com.sky.entity.Employee;
 import com.sky.properties.JwtProperties;
 import com.sky.result.PageResult;
@@ -120,6 +121,13 @@ public class EmployeeController {
         PageResult pageResult = employeeService.page(employeePageQueryDTO);
         return Result.success(pageResult);
     }
+
+    /**
+     * 修改员工账号状态
+     * @param status
+     * @param id
+     * @return
+     */
     @ApiOperation("修改员工账号状态")
     @PostMapping("/status/{status}")
     public Result updateStatus(@PathVariable Integer status, Long id) {
@@ -154,6 +162,19 @@ public class EmployeeController {
     public Result update(@RequestBody Employee employee) {
         log.info("修改员工信息操作：" + employee);
         employeeService.update(employee);
+        return Result.success();
+    }
+    /**
+     * 该功能前端存在瑕疵导致无法实现：前端只传进来了newPassword和oldPassword，无法获取到empId
+     * 修改员工账户密码
+     * @param passwordEditDTO
+     * @return
+     */
+    @ApiOperation("修改员工账户密码")
+    @PutMapping("/editPassword")
+    public Result editPassword(@RequestBody PasswordEditDTO passwordEditDTO) {
+        log.info("修改员工账户密码操作：" + passwordEditDTO);
+        employeeService.updatePassword(passwordEditDTO);
         return Result.success();
     }
 }

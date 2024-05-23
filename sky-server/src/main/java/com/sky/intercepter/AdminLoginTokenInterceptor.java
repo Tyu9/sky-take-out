@@ -48,6 +48,7 @@ public class AdminLoginTokenInterceptor implements HandlerInterceptor {
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
             Long empId = Long.valueOf(claims.get(JwtClaimsConstant.EMP_ID).toString());
             BaseContext.setCurrentId(empId);
+            log.info("令牌正确,放行");
         } catch (Exception e) {
             e.printStackTrace();
             log.info("令牌错误,响应401");

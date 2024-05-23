@@ -48,7 +48,7 @@ public class GlobalExceptionHandler {
         // 获取数组中的第3个元素
         if(split[2]!=null&&split[2]!=""){
             // 拼接字符串到返回结果中
-            return Result.error(split[2]+MessageConstant.USERNAME_EXIST);
+            return Result.error(split[2]+MessageConstant.DateBase_Data_EXIST);
         }
         return Result.error(MessageConstant.UNKNOWN_ERROR);
     }
