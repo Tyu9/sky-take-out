@@ -39,5 +39,9 @@ sky:
     admin-token-name: token
     # 设置MD5加密时使用的盐值
   salt: tanyu
-
+  alioss:
+    endpoint: ${sky.alioss.endpoint}
+    access-key-id: ${sky.alioss.access-key-id}
+    access-key-secret: ${sky.alioss.access-key-secret}
+    bucket-name: ${sky.alioss.bucket-name}
 

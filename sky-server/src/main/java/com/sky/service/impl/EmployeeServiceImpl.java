@@ -81,10 +81,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         //补全employee对象属性
         String token = DigestUtils.md5DigestAsHex((PasswordConstant.DEFAULT_PASSWORD + salt).getBytes());
         employee.setStatus(StatusConstant.ENABLE);
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setCreateUser(BaseContext.getCurrentId());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateUser(BaseContext.getCurrentId());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
         employee.setPassword(token);
         //调用mapper层方法
         employeeMapper.save(employee);
@@ -115,8 +115,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void update(Employee employee) {
         //1、补全修改时间、修改人
-        employee.setUpdateTime(LocalDateTime.now());
-        employee.setUpdateUser(BaseContext.getCurrentId());
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(BaseContext.getCurrentId());
         //2、调用mapper层方法
         employeeMapper.update(employee);
     }
