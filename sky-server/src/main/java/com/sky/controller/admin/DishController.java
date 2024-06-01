@@ -7,6 +7,7 @@ import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.DishService;
 import com.sky.vo.DishVO;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +23,7 @@ import java.util.List;
  * @Date：2024/5/24 20:24
  * @Filename：DishController
  */
+@Api(tags ="菜品相关接口")
 @RestController
 @Slf4j
 @RequestMapping("/admin/dish")
@@ -96,5 +98,34 @@ public class DishController {
         return Result.success();
     }
 
+    /**
+     *
+     * @param status
+     * @param id
+     * @return
+     */
+    @ApiOperation("修改菜品状态接口")
+    @PostMapping("/status/{status}")
+    public Result updateStatus(@PathVariable Integer status, Long id){
+        DishDTO dishDTO = new DishDTO();
+        dishDTO.setStatus(status);
+        dishDTO.setId(id);
+        log.info("更改菜品状态");
+        dishService.updateStatus(dishDTO);
+        return Result.success();
+    }
+
+    /**
+     * 根据分类id查询菜品
+     * @param categoryId
+     * @return
+     */
+    @ApiOperation("根据分类id查询菜品接口")
+    @GetMapping("/list")
+    public Result<List<Dish>> list( Long categoryId){
+        log.info("根据分类ID查询菜品");
+        List<Dish> dish = dishService.list(categoryId);
+        return Result.success(dish);
+    }
 
 }

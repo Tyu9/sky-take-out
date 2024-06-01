@@ -47,4 +47,10 @@ public interface CategoryService {
      * @return
      */
     List<Category> findByType(Integer type);
+    /**
+     * 查询分类
+     * @param type
+     * @return
+     */
+    List<Category> list(Integer type);
 }

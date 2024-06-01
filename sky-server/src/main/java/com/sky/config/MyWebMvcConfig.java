@@ -1,6 +1,7 @@
 package com.sky.config;
 
 import com.sky.intercepter.AdminLoginTokenInterceptor;
+import com.sky.intercepter.UserLoginTokenInterceptor;
 import com.sky.json.JacksonObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -35,11 +37,16 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport {
      */
     @Autowired
     private AdminLoginTokenInterceptor adminLoginTokenInterceptor;
+    @Resource
+    private UserLoginTokenInterceptor userLoginTokenInterceptor;
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(adminLoginTokenInterceptor)
-                .addPathPatterns("/admin/**")
-                .excludePathPatterns("/admin/employee/login");
+        registry.addInterceptor(adminLoginTokenInterceptor) //添加设置的拦截器
+                .addPathPatterns("/admin/**") //设置拦截路径
+                .excludePathPatterns("/admin/employee/login"); //设置放行路径
+        registry.addInterceptor(userLoginTokenInterceptor)
+                .addPathPatterns("user/**")
+                .excludePathPatterns("user/user/login","/user/shop/status");
     }
 
     /**
@@ -47,7 +54,7 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport {
      * @return
      */
     @Bean
-    public Docket docket() {
+    public Docket adminDocket() {
         ApiInfo apiInfo = new ApiInfoBuilder()
                 .title("苍穹外卖项目接口文档")
                 .version("2.0")
@@ -55,8 +62,25 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport {
                 .build();
         Docket docket = new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo)
+                .groupName("管理端接口")
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.sky.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.sky.controller.admin"))
+                .paths(PathSelectors.any())
+                .build();
+        return docket;
+    }
+    @Bean
+    public Docket userDocket() {
+        ApiInfo apiInfo = new ApiInfoBuilder()
+                .title("苍穹外卖项目接口文档")
+                .version("2.0")
+                .description("苍穹外卖项目接口文档")
+                .build();
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                .apiInfo(apiInfo)
+                .groupName("用户端接口")
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.sky.controller.user"))
                 .paths(PathSelectors.any())
                 .build();
         return docket;

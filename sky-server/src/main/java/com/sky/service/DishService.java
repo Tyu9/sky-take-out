@@ -18,6 +18,13 @@ import java.util.List;
  */
 public interface DishService {
     /**
+     * 根据id查询菜品
+     * @param id
+     * @return
+     */
+    List<Dish> list(Long id);
+
+    /**
      * 添加菜品
      * @param dishDTO
      */
@@ -49,4 +56,18 @@ public interface DishService {
      * @param  dishDTO
      */
         void updateDish(DishDTO dishDTO);
+
+    /**
+     * 修改菜品状态操作
+     * @param dishDTO
+     */
+    void updateStatus(DishDTO dishDTO);
+
+    /**
+     * 条件查询菜品和口味
+     * @param dish
+     * @return
+     */
+    List<DishVO> listWithFlavor(Dish dish);
+
 }

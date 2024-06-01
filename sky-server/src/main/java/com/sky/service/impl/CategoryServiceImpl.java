@@ -2,12 +2,18 @@ package com.sky.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.sky.constant.MessageConstant;
 import com.sky.constant.StatusConstant;
 import com.sky.context.BaseContext;
 import com.sky.dto.CategoryDTO;
 import com.sky.dto.CategoryPageQueryDTO;
 import com.sky.entity.Category;
+import com.sky.entity.Dish;
+import com.sky.entity.Setmeal;
+import com.sky.exception.BaseException;
 import com.sky.mapper.CategoryMapper;
+import com.sky.mapper.DishMapper;
+import com.sky.mapper.SetmealMapper;
 import com.sky.result.PageResult;
 import com.sky.service.CategoryService;
 import org.springframework.beans.BeanUtils;
@@ -29,6 +35,10 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
     @Autowired
     CategoryMapper categoryMapper;
+    @Autowired
+    DishMapper dishMapper;
+    @Autowired
+    SetmealMapper setmealMapper;
 
     /**
      * 分页查询
@@ -91,6 +101,18 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public void deleteById(Long id) {
+        /*
+            1、判断当前分类是否关联了菜品/套餐
+            2、删除分类
+         */
+        List<Dish> dish = dishMapper.findByCategoryId(id);
+        if(dish != null){
+            throw new BaseException(MessageConstant.CATEGORY_BE_RELATED_BY_DISH);
+        }
+        List<Setmeal> setmeal = setmealMapper.findByCategoryId(id);
+        if(setmeal != null){
+            throw new BaseException(MessageConstant.CATEGORY_BE_RELATED_BY_SETMEAL);
+        }
         categoryMapper.deleteById(id);
     }
 
@@ -102,7 +124,19 @@ public class CategoryServiceImpl implements CategoryService {
      */
     @Override
     public List<Category> findByType(Integer type) {
-        List<Category> categoryList = categoryMapper.findByType(type);
+        List<Category> categoryList = categoryMapper.list(type);
         return categoryList;
+    }
+
+    /**
+     * 查询分类
+     *
+     * @param type
+     * @return
+     */
+    @Override
+    public List<Category> list(Integer type) {
+        List<Category> byType = categoryMapper.list(type);
+        return byType;
     }
 }

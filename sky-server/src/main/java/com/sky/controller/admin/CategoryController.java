@@ -8,6 +8,7 @@ import com.sky.entity.Employee;
 import com.sky.result.PageResult;
 import com.sky.result.Result;
 import com.sky.service.CategoryService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.models.auth.In;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import java.util.List;
  * @Date：2024/5/22 19:36
  * @Filename：CategoryController
  */
+@Api(tags ="菜品分类接口")
 @RestController
 @Slf4j
 @RequestMapping("/admin/category")

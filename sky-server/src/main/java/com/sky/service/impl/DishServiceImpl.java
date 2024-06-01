@@ -20,7 +20,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -119,6 +121,7 @@ public class DishServiceImpl implements DishService {
      * @param id
      * @return
      */
+    @Transactional
     @Override
     public DishVO findById(Long id) {
         /*
@@ -162,5 +165,55 @@ public class DishServiceImpl implements DishService {
         }
         dishFlavors.forEach(dishFlavor -> dishFlavor.setDishId(dish.getId()));
         dishFlavorMapper.add(dishFlavors);
+    }
+
+    /**
+     * 修改菜品状态操作
+     *
+     * @param dishDTO
+     */
+    @Override
+    public void updateStatus(DishDTO dishDTO) {
+        /*
+            通过ID查询到要修改的菜品，将其状态设置为dishDTO中的状态
+         */
+        Dish dish = new Dish();
+        BeanUtils.copyProperties(dishDTO,dish);
+        dishMapper.updateDish(dish);
+        if(dish.getStatus() == 0){
+            //将对应套餐也停售
+        }
+    }
+
+    /**
+     * 根据分类id查询菜品
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public List<Dish> list(Long id) {
+      List<Dish>  dish = dishMapper.listByCategoryId(id);
+        return dish;
+    }
+
+    /**
+     * 条件查询菜品和口味
+     *
+     * @param dish
+     * @return
+     */
+    @Override
+    public List<DishVO> listWithFlavor(Dish dish) {
+        List<Dish> dishList = dishMapper.list(dish);
+        ArrayList<DishVO> list = new ArrayList<>();
+        for (Dish dishVO : dishList) {
+            DishVO vo = new DishVO();
+            BeanUtils.copyProperties(dishVO,vo);
+            List<DishFlavor> flavors = dishFlavorMapper.findFlavorById(dishVO.getId());
+            vo.setFlavors(flavors);
+            list.add(vo);
+        }
+        return list;
     }
 }
