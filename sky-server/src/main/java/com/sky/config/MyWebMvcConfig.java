@@ -45,8 +45,8 @@ public class MyWebMvcConfig extends WebMvcConfigurationSupport {
                 .addPathPatterns("/admin/**") //设置拦截路径
                 .excludePathPatterns("/admin/employee/login"); //设置放行路径
         registry.addInterceptor(userLoginTokenInterceptor)
-                .addPathPatterns("user/**")
-                .excludePathPatterns("user/user/login","/user/shop/status");
+                .addPathPatterns("/user/**")
+                .excludePathPatterns("/user/user/login","/user/shop/status");
     }
 
     /**

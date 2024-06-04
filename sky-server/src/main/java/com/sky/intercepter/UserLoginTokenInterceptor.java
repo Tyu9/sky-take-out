@@ -44,7 +44,7 @@ public class UserLoginTokenInterceptor implements HandlerInterceptor {
         }
         //3、存在则校验令牌是否有效
         try {
-            Claims claims = JwtUtil.parseJWT(jwtProperties.getUserTokenName(), token);
+            Claims claims = JwtUtil.parseJWT(jwtProperties.getUserSecretKey(), token);
             Long userId = Long.valueOf(claims.get(JwtClaimsConstant.USER_ID).toString());
             BaseContext.setCurrentId(userId);
             log.info("令牌正确,放行");

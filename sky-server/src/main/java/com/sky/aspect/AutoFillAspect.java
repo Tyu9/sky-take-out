@@ -29,8 +29,8 @@ import java.time.LocalDateTime;
 @Slf4j
 public class AutoFillAspect {
     /**
-     * 该方法大致思路：
-     * 我们要对
+     *
+     *
      */
     @Pointcut("execution (* com.sky.mapper.*.*(..)) && @annotation(com.sky.annotation.AutoFill)")
     public void path(){}

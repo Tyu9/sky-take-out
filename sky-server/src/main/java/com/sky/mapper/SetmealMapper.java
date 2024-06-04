@@ -27,8 +27,9 @@ public interface SetmealMapper {
 
     @AutoFill(OperationType.INSERT)
     void add(Setmeal setmeal);
-
-    SetmealVO findById(Long id);
+    @Select("select * from setmeal where id = #{id}")
+    SetmealVO findByIdVO(Long id);
+    Setmeal findById(Long id);
     @AutoFill(OperationType.UPDATE)
     void updateSetmeal(Setmeal setmeal);
 
@@ -49,4 +50,6 @@ public interface SetmealMapper {
             "from setmeal_dish sd left join dish d on sd.dish_id = d.id " +
             "where sd.setmeal_id = #{setmealId}")
     List<DishItemVO> getDishItemBySetmealId(Long setmealId);
+
+    SetmealVO getByIdWithDish(Long id);
 }

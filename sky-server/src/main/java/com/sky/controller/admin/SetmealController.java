@@ -10,6 +10,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +30,12 @@ import java.util.List;
 public class SetmealController {
     @Autowired
     private SetmealService setmealService;
+
+    /**
+     * 分页查询
+     * @param setmealPageQueryDTO
+     * @return
+     */
     @ApiOperation("套餐分页查询接口")
     @GetMapping("/page")
     public Result<PageResult> page(SetmealPageQueryDTO setmealPageQueryDTO){
@@ -38,9 +45,12 @@ public class SetmealController {
     }
 
     /**
-     * 新增套餐接口
+     *
+     * @ApiOperation("新增套餐接口")
+     * @param setmealDTO
      * @return
      */
+    @CacheEvict(value = "setemal",key = "#setmealDTO.categoryId")
     @ApiOperation("新增套餐接口")
     @PostMapping
     public Result add(@RequestBody SetmealDTO setmealDTO){
@@ -48,6 +58,12 @@ public class SetmealController {
         setmealService.add(setmealDTO);
         return Result.success();
     }
+
+    /**
+     * 根据id查询套餐
+     * @param id
+     * @return
+     */
     @ApiOperation("根据id查询套餐接口")
     @GetMapping("/{id}")
     public Result<SetmealVO> getById(@PathVariable Long id){
@@ -61,6 +77,7 @@ public class SetmealController {
      * @param setmealDTO
      * @return
      */
+    @CacheEvict(value = "setmeal" , key = "#setmealDTO.categoryId")
     @ApiOperation("修改套餐接口")
     @PutMapping
     public Result updateSetmeal(@RequestBody SetmealDTO setmealDTO){
@@ -70,11 +87,12 @@ public class SetmealController {
     }
 
     /**
-     * 修改套餐接口
+     * 修改套餐起售/禁止接口
      * @param status
      * @param id
      * @return
      */
+    @CacheEvict(value = "setmeal" , allEntries = true)
     @ApiOperation("更改套餐状态接口")
     @PostMapping("/status/{status}")
     public Result modifyStatus(@PathVariable Integer status, Long id){
@@ -88,6 +106,7 @@ public class SetmealController {
      * @param ids
      * @return
      */
+    @CacheEvict(value = "setmeal" , allEntries = true)
     @ApiOperation("批量删除套餐接口")
     @DeleteMapping
     public Result deleteByIds(@RequestParam List<Long> ids){

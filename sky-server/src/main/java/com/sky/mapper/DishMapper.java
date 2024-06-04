@@ -50,4 +50,5 @@ public interface DishMapper {
     List<Dish> findByCategoryId(Long id);
 
     List<Dish> list(Dish dish);
+    DishVO getByIdWithDish(Long id);
 }

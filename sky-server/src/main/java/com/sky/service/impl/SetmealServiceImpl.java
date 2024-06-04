@@ -104,7 +104,7 @@ public class SetmealServiceImpl implements SetmealService {
             2、通过套餐ID查询套餐配菜Setmeal_Dish信息
             3、封装为VO返回数据
          */
-        SetmealVO setmealVO = setmealMapper.findById(id);
+        SetmealVO setmealVO = setmealMapper.findByIdVO(id);
         List<SetmealDish> setmealDishes = setmealDishMapper.findBySetmealId(id);
         setmealVO.setSetmealDishes(setmealDishes);
         return setmealVO;
