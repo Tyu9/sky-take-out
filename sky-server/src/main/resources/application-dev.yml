@@ -8,13 +8,13 @@ sky:
     password: 123
   alioss:
     endpoint: oss-cn-shenzhen.aliyuncs.com
-    access-key-id: LTAI5tNB4Wm3JXaP9E6oo5qR
-    access-key-secret: sPO3q4JB036oC7zsNHwFok1LfXKmA8
+    access-key-id: LTA
+    access-key-secret: sP
     bucket-name: ty-sky-take-out-study
   redis:
     host: localhost
     port: 6379
     password: 123456
   wechat:
-    appid: wx776e27643c92d6a9
-    secret: c9741208389753684bf42335ba21b84b
+    appid: wx
+    secret: c9
